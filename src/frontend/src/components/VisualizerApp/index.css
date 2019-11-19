@@ -19,5 +19,17 @@
   height: 32px;
   line-height: 32px;
   padding: 0 20px 0 20px;
-  background-color: cornflowerblue !important;
+  background-color: #4972e5 !important;
+}
+
+.content-headline {
+  color: #38494d;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.content-icon {
+  padding-left: 10px;
+  padding-right: 5px;
 }
