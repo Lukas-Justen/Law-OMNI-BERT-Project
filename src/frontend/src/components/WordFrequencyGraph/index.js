@@ -67,17 +67,7 @@ class WordFrequencyGraph extends React.Component {
         // Build a legend for the corpora
         this.buildLegend(svg, margin);
 
-        this.buildBar(margin, svg, corpus1, x, y, "#7F9DEE");
-
-        const h = this.state.height - margin.bottom - margin.top;
-
-        svg.selectAll("rect")
-            .transition()
-            .duration(1000)
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-            .attr("y", function(d) { return y(d.y); })
-            .attr("height", function(d) { return h - y(d.y); })
-            .delay(function(d,i){return(i*25)})
+        this.buildBar(margin, svg, corpus1, x, y, "#7F9DEE", animate);
     }
 
 
@@ -182,7 +172,7 @@ class WordFrequencyGraph extends React.Component {
             .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
             .attr("x", 20)
             .attr("y", this.state.height - margin.bottom / 2 + 7)
-            .text("Corpus 1")
+            .text("Corpus A")
             .style("font-size", "15px")
             .attr("alignment-baseline", "middle");
 
@@ -195,19 +185,46 @@ class WordFrequencyGraph extends React.Component {
             .attr("alignment-baseline", "middle");
     }
 
-    buildBar(margin, svg, data, x, y, color) {
+    buildBar(margin, svg, data, x, y, color, animate) {
         const h = this.state.height - margin.bottom - margin.top;
 
-        svg.selectAll(".bar")
-            .data(data)
-            .enter().append("rect")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-            .attr("class", "bar")
-            .attr("x", function(d) { return x(d.x); })
-            .attr("width", x.bandwidth())
-            .style("fill", color)
-            .attr("y", function(d) { return y(0); })
-            .attr("height", function(d) {return h - y(0) });
+        if (animate) {
+            svg.selectAll(".bar")
+                .data(data)
+                .enter().append("rect")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                .attr("class", "bar")
+                .attr("x", function(d) { return x(d.x); })
+                .attr("width", x.bandwidth())
+                .style("fill", color)
+                .attr("y", function(d) { return y(0); })
+                .attr("height", function(d) {return h - y(0) });
+
+            svg.selectAll("rect")
+                .transition()
+                .duration(1000)
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                .attr("y", function (d) {
+                    return y(d.y);
+                })
+                .attr("height", function (d) {
+                    return h - y(d.y);
+                })
+                .delay(function (d, i) {
+                    return (i * 25)
+                })
+        } else {
+            svg.selectAll(".bar")
+                .data(data)
+                .enter().append("rect")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                .attr("class", "bar")
+                .attr("x", function(d) { return x(d.x); })
+                .attr("width", x.bandwidth())
+                .style("fill", color)
+                .attr("y", function(d) { return y(d.y); })
+                .attr("height", function(d) {return h - y(d.y) });
+        }
     }
 
 
