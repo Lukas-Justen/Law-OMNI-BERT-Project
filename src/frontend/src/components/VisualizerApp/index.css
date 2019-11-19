@@ -1,0 +1,23 @@
+.dashboard {
+  width: calc(100vw);
+  height: calc(100vh - 59px);
+  padding: 20px
+}
+
+.general-stats {
+  height: calc(20% - 20px);
+  margin-bottom: 20px;
+  border-radius: 20px;
+}
+
+.visualization {
+  height: calc(80%);
+  border-radius: 20px;
+}
+
+.upload-btn {
+  height: 32px;
+  line-height: 32px;
+  padding: 0 20px 0 20px;
+  background-color: cornflowerblue !important;
+}
