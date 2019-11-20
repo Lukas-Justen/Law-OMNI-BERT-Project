@@ -5,13 +5,13 @@
 }
 
 .general-stats {
-  height: calc(20% - 20px);
+  height: calc(25% - 20px);
   margin-bottom: 20px;
   border-radius: 20px;
 }
 
 .visualization {
-  height: calc(80%);
+  height: calc(75%);
   border-radius: 20px;
 }
 
@@ -25,6 +25,9 @@
 
 .content-headline {
   color: #38494d;
+}
+
+.headline-margin {
   margin-top: 15px;
   margin-bottom: 10px;
   margin-left: 10px;
@@ -37,4 +40,24 @@
 
 .content-field {
   height: 400px !important;
+}
+
+.stats-info {
+  margin: auto 0 auto 0;
+  height: calc(100% - 60px)
+}
+
+.stats-value {
+  font-weight: bold;
+}
+
+.stats-description {
+  color: #38494d;
+}
+
+.search-field {
+  line-height: 24px;
+  height: 24px;
+  margin: 0 0 0 40px;
+  width: 20% !important
 }

@@ -14,7 +14,7 @@ class WordFrequencyGraph extends React.Component {
 
     // The following three functions are responsible for resizing/updating
     componentWillReceiveProps(nextProps, nextContext) {
-        if (this.props.data !== nextProps.data) {
+        if (this.props.data !== nextProps.data || this.props.filterWord !== nextProps.filterWord) {
             this.redrawChart(true)
         }
     }
@@ -45,10 +45,25 @@ class WordFrequencyGraph extends React.Component {
     // Draws the svg and all child components
     drawChart(animate) {
         // Transform the corpus1
-        const corpus1 = this.props.data.map(o => {
-            return {x: o.word, y: o.freq}
+        var corpus1 = this.props.data.map(o => {
+            return {x: o.word, y: o.count}
         });
-        const corpus2 = corpus1;
+
+        const filterWord = this.props.filterWord.toLowerCase();
+
+        function filterFunction(sample){
+            return sample.x.toLowerCase().includes(filterWord)
+        }
+
+        if (filterWord !== "") {
+            corpus1 = corpus1.filter(filterFunction)
+        }
+
+        if (corpus1.length > 30) {
+            corpus1 = corpus1.slice(0,30);
+        }
+
+        var corpus2 = corpus1;
 
         // Define the parent div and svg
         const parent = d3.select("." + this.props.id);
@@ -172,7 +187,7 @@ class WordFrequencyGraph extends React.Component {
             .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
             .attr("x", 20)
             .attr("y", this.state.height - margin.bottom / 2 + 7)
-            .text("Corpus A")
+            .text(this.props.docName)
             .style("font-size", "15px")
             .attr("alignment-baseline", "middle");
 

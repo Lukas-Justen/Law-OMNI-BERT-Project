@@ -8,12 +8,12 @@ class ModalDocument extends React.Component{
             <MDBModalBody>
                 <h5 className={"modal-headline"}><b>New Document Analysis</b></h5>
                 <MDBInput label="Document name" outline onChange={this.props.changeName} value={this.props.name}/>
-                <MDBInput type="textarea" className={"content-field"} onChange={this.props.changeDocument} label="Document content" outline />
+                <MDBInput type="textarea" className={"content-field"} onChange={this.props.changeDocument} value={this.props.document} label="Document content" outline />
                 <MDBRow>
                     <MDBCol md={6}>
                         <MDBBtn className={"close-btn shadow-none"}  onClick={this.props.toggle} color="primary">Close</MDBBtn></MDBCol>
                     <MDBCol md={6}>
-                        <MDBBtn className={"visualize-btn shadow-none"}  onClick={this.props.analyze} color="primary">Analyze</MDBBtn></MDBCol>
+                        <MDBBtn className={"visualize-btn shadow-none"}  onClick={this.props.analyze} disabled={this.props.document === "" || this.props.name === ""} color="primary">Analyze</MDBBtn></MDBCol>
                 </MDBRow>
             </MDBModalBody>
         </MDBModal>
