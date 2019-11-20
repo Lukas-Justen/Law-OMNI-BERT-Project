@@ -1,8 +1,11 @@
 #!flask/bin/python
 from flask import Flask, jsonify, request, render_template, abort
+
+from flask_cors import CORS
 import text_utilities
 
 app = Flask(__name__, template_folder="templates")
+CORS(app)
 
 @app.route('/')
 def index():
@@ -19,12 +22,15 @@ def create_task():
 @app.route('/handle_form', methods=['POST'])
 def handle_data():
     if not request.json:
+        print("NO REQUEST")
         abort(400)
 
     if "body" not in request.json.keys():
+        print("NO BODY")
         abort(400)
 
     if "text_blob" not in request.json["body"].keys():
+        print("NO BLOB")
         abort(400)
 
     text_blob = request.json["body"]["text_blob"]
