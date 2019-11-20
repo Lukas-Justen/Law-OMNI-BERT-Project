@@ -17,7 +17,7 @@ def get_metrics(text_block, freq_clip=None):
 
     total_num_words = len(word_list)
     unique_words = get_unique_words(word_list)
-    frequencies = [{x:y} for x,y in sorted(calc_word_freq(word_list).items(), key=lambda x:x[1], reverse=True)]
+    frequencies = [{"word": x, "count":y} for x,y in sorted(calc_word_freq(word_list).items(), key=lambda x:x[1], reverse=True)]
 
     if freq_clip != None and freq_clip < len(frequencies):
         frequencies = frequencies[:freq_clip]
