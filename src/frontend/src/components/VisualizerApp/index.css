@@ -20,7 +20,7 @@
   line-height: 32px;
   font-weight: bold;
   padding: 0 20px 0 20px;
-  background-color: #4972e5 !important;
+  /*background-color: #583a96 !important;*/
 }
 
 .content-headline {
@@ -56,5 +56,10 @@
   line-height: 24px;
   height: 24px;
   margin: 0 0 0 40px;
-  width: 20% !important
+  width: 20% !important;
+}
+
+.search-field:focus {
+  box-shadow: 0 0 3px #583a96 !important;
+  border-color: #583a96 !important;
 }

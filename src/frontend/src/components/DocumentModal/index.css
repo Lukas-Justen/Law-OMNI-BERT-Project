@@ -5,7 +5,7 @@
     padding-top: 0;
     padding-bottom: 0;
     margin: 0;
-    background-color: #4972e5 !important;
+    background-color: #583a96 !important;
     font-weight: bold;
 }
 
@@ -17,7 +17,7 @@
     padding-bottom: 0;
     margin: 0;
     font-weight: bold;
-    background-color: #4972e5 !important;
+    background-color: #583a96 !important;
 }
 
 .modal-headline {
@@ -26,7 +26,15 @@
     margin-bottom: 10px;
 }
 
-
 .content-field {
     height: 470px !important;
+}
+
+.northwestern-border:focus {
+    border: 1px solid #583a96 !important;
+    box-shadow: inset 0 0 0 1px #583a96 !important;
+}
+
+.northwestern-border:focus + label {
+    color: #583a96 !important;
 }

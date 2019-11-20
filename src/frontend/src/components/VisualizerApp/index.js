@@ -6,6 +6,7 @@ import {
     MDBNavbarBrand,
     MDBNavbarNav, MDBRow
 } from "mdbreact";
+
 import WordFrequencyGraph from "../WordFrequencyGraph";
 import ModalDocument from "../DocumentModal";
 
@@ -96,8 +97,7 @@ class VisualizerApp extends React.Component {
                         </MDBNavbarBrand>
                     </MDBNavbarNav>
                     <MDBNavbarNav right>
-                        <MDBBtn color={"primary"} className={"analyze-btn shadow-none"} onClick={this.toggle}>Analyze
-                            document</MDBBtn>
+                        <MDBBtn color={"primary"} className={"analyze-btn shadow-none"} onClick={this.toggle}>Change Corpora</MDBBtn>
                     </MDBNavbarNav>
                 </MDBNavbar>
 

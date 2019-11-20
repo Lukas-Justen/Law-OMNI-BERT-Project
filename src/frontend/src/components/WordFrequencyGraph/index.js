@@ -134,7 +134,7 @@ class WordFrequencyGraph extends React.Component {
         return d3.scaleBand()
             .domain(data.map(function(d) { return d.x; }))
             .range([0, this.state.width - margin.left - margin.right])
-            .padding(0.5);
+            .padding(0.4);
     }
 
     getY(data1, data2, margin) {
