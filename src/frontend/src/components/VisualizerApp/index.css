@@ -15,9 +15,10 @@
   border-radius: 20px;
 }
 
-.upload-btn {
+.analyze-btn {
   height: 32px;
   line-height: 32px;
+  font-weight: bold;
   padding: 0 20px 0 20px;
   background-color: #4972e5 !important;
 }
@@ -32,4 +33,8 @@
 .content-icon {
   padding-left: 10px;
   padding-right: 5px;
+}
+
+.content-field {
+  height: 400px !important;
 }
