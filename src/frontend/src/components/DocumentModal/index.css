@@ -27,14 +27,55 @@
 }
 
 .content-field {
-    height: 470px !important;
+    height: 430px !important;
 }
 
-.northwestern-border:focus {
-    border: 1px solid #583a96 !important;
-    box-shadow: inset 0 0 0 1px #583a96 !important;
+.corpusa-border:focus {
+    border: 1px solid #97d094 !important;
+    box-shadow: inset 0 0 0 1px #97d094 !important;
 }
 
-.northwestern-border:focus + label {
-    color: #583a96 !important;
+.corpusa-border:focus + label {
+    color: #97d094 !important;
+}
+
+.corpusb-border:focus {
+    border: 1px solid #7F9DEE !important;
+    box-shadow: inset 0 0 0 1px #7F9DEE !important;
+}
+
+.corpusb-border:focus + label {
+    color: #7F9DEE !important;
+}
+
+.corpus-btn {
+    width: calc(100%);
+    height: 32px;
+    line-height: 32px;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0;
+    font-weight: bold;
+}
+
+.corpusa-div {
+    background-color: #97d094;
+    width: calc(100%);
+    height: 32px;
+    line-height: 32px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.corpusb-div {
+    background-color: #7F9DEE;
+    width: calc(100%);
+    height: 32px;
+    line-height: 32px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
 }

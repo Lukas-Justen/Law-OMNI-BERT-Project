@@ -641,6 +641,8 @@ $special-color-dark:   #263238 !default;
 $white:                #fff;
 $black:                #000;
 $error-color:          $red-base !default;
+$corpusa:              #97d094;
+$corpusb:              #7F9DEE;
 
 $material-colors: () !default;
 $material-colors: map-merge(
@@ -753,7 +755,9 @@ $mdb-colors: map-merge(
     "dark":        $grey-darken-4,
     "light":       $grey-lighten-2,
     "white":       $white-base,
-    "black":       $black-base
+    "black":       $black-base,
+    "corpusa":     $corpusa,
+    "corpusb":     $corpusb,
   ),
   $mdb-colors
 );

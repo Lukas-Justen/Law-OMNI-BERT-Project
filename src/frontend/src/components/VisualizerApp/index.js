@@ -17,18 +17,27 @@ class VisualizerApp extends React.Component {
 
         this.state = {
             modal: true,
-            data: [],
-            name: "",
-            document: "",
+            dataa: [],
+            datab: [],
+            namea: "",
+            documenta: "",
+            nameb: "",
+            documentb: "",
             filterWord: "",
-            words: 0,
-            vocab: 0,
-            readability: 0
+            wordsa: 0,
+            vocaba: 0,
+            readabilitya: 0,
+            wordsb: 0,
+            vocabb: 0,
+            readabilityb: 0,
+            corpus: "a"
         };
         this.toggle = this.toggle.bind(this);
-        this.handleChangeName = this.handleChangeName.bind(this);
+        this.handleChangeNameA = this.handleChangeNameA.bind(this);
+        this.handleChangeNameB = this.handleChangeNameB.bind(this);
         this.analyze = this.analyze.bind(this);
-        this.handleDocumentChange = this.handleDocumentChange.bind(this);
+        this.handleDocumentChangeA = this.handleDocumentChangeA.bind(this);
+        this.handleDocumentChangeB = this.handleDocumentChangeB.bind(this);
         this.handleSearchChange = this.handleSearchChange.bind(this);
     }
 
@@ -40,16 +49,31 @@ class VisualizerApp extends React.Component {
         );
     }
 
-    handleChangeName(event) {
+
+    handleChangeNameA(event) {
         this.setState({
-            name: event.target.value
+            namea: event.target.value
         })
     }
 
-    handleDocumentChange(event) {
+    handleDocumentChangeA(event) {
         this.setState({
-            document: event.target.value
+            documenta: event.target.value
         })
+
+    }
+
+    handleChangeNameB(event) {
+        this.setState({
+            nameb: event.target.value
+        })
+    }
+
+    handleDocumentChangeB(event) {
+        this.setState({
+            documentb: event.target.value
+        })
+
     }
 
     handleSearchChange(event) {
@@ -60,20 +84,40 @@ class VisualizerApp extends React.Component {
 
     analyze() {
         this.toggle();
+
         fetch("http://127.0.0.1:5000/handle_form", {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 "body": {
-                    "text_blob": this.state.document
+                    "text_blob": this.state.documenta
                 }
             }),
             method: "POST"
         }).then(value => value.json()
         ).then(json => {
             this.setState({
-                data: json.body.frequencies,
-                words: json.body.total_num_words,
-                vocab: json.body.unique_words.length
+                dataa: json.body.frequencies,
+                wordsa: json.body.total_num_words,
+                vocaba: json.body.unique_words.length
+            });
+        }).catch(error => {
+            console.log(error)
+        });
+
+        fetch("http://127.0.0.1:5000/handle_form", {
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                "body": {
+                    "text_blob": this.state.documentb
+                }
+            }),
+            method: "POST"
+        }).then(value => value.json()
+        ).then(json => {
+            this.setState({
+                datab: json.body.frequencies,
+                wordsb: json.body.total_num_words,
+                vocabb: json.body.unique_words.length
             });
         }).catch(error => {
             console.log(error)
@@ -97,47 +141,60 @@ class VisualizerApp extends React.Component {
                         </MDBNavbarBrand>
                     </MDBNavbarNav>
                     <MDBNavbarNav right>
-                        <MDBBtn color={"primary"} className={"analyze-btn shadow-none"} onClick={this.toggle}>Change Corpora</MDBBtn>
+                        <MDBBtn color={"primary"} className={"analyze-btn shadow-none"} onClick={this.toggle}>Change
+                            Corpora</MDBBtn>
                     </MDBNavbarNav>
                 </MDBNavbar>
 
                 <div className={"dashboard"}>
 
                     <MDBCard className={"general-stats"}>
-                        <h5 className={"content-headline headline-margin"}><i className="fas fa-chart-pie content-icon"/>
+                        <h5 className={"content-headline headline-margin"}><i
+                            className="fas fa-chart-pie content-icon"/>
                             <b>General Statistics</b></h5>
                         <MDBRow>
                             <MDBCol md={3} className={"text-center stats-info"}>
-                                <div><h1 className={"stats-value"}>{this.state.words}</h1><p
+                                <div><h1 className={"stats-value"}>{this.state.wordsa} / {this.state.wordsb}</h1><p
                                     className={"stats-description"}>NUMBER OF WORDS</p></div>
                             </MDBCol>
                             <MDBCol md={3} className={"text-center stats-info"}>
-                                <div><h1 className={"stats-value"}>{this.state.vocab}</h1><p
+                                <div><h1 className={"stats-value"}>{this.state.vocaba} / {this.state.vocabb}</h1><p
                                     className={"stats-description"}>VOCABULARY SIZE</p></div>
                             </MDBCol>
                             <MDBCol md={3} className={"text-center stats-info"}>
-                                <div><h1 className={"stats-value"}>{this.state.readability}</h1><p
-                                    className={"stats-description"}>READABILITY INDEX</p></div>
+                                <div><h1
+                                    className={"stats-value"}>{this.state.readabilitya} / {this.state.readabilityb}</h1>
+                                    <p
+                                        className={"stats-description"}>READABILITY INDEX</p></div>
                             </MDBCol>
                             <MDBCol md={3} className={"text-center stats-info"}>
-                                <div><h1 className={"stats-value"}>0</h1><p className={"stats-description"}>UNKNOWN
+                                <div><h1 className={"stats-value"}>0 / 0</h1><p className={"stats-description"}>UNKNOWN
                                     METRIC</p></div>
                             </MDBCol>
                         </MDBRow>
                     </MDBCard>
                     <MDBCard className={"visualization"}>
-                        <MDBRow className={"headline-margin"}><h5 className={"content-headline"}><i className="fas fa-chart-line content-icon"/>
+                        <MDBRow className={"headline-margin"}><h5 className={"content-headline"}><i
+                            className="fas fa-chart-line content-icon"/>
                             <b>Word Frequency Graph</b></h5>
-                                <input type="email" placeholder={"Search for words ..."} className="form-control search-field" value={this.state.filterWord} onChange={this.handleSearchChange} />
-                            </MDBRow>
-                        <WordFrequencyGraph id={"word-frequency"} data={this.state.data} height={"calc(100% - 60px)"}
-                                            filterWord={this.state.filterWord} docName={this.state.name}/>
+                            <input type="email" placeholder={"Search for words ..."}
+                                   className="form-control search-field" value={this.state.filterWord}
+                                   onChange={this.handleSearchChange}/>
+                        </MDBRow>
+                        <WordFrequencyGraph id={"word-frequency"} dataA={this.state.dataa} height={"calc(100% - 60px)"}
+                                            filterWord={this.state.filterWord} docNameA={this.state.namea}
+                                            docNameB={this.state.nameb} dataB={this.state.datab}/>
                     </MDBCard>
 
-                    <ModalDocument modal={this.state.modal} changeName={this.handleChangeName} analyze={this.analyze}
-                                   changeDocument={this.handleDocumentChange} toggle={this.toggle}
-                                   document={this.state.document}
-                                   name={this.state.name}/>
+                    <ModalDocument modal={this.state.modal} changeNameA={this.handleChangeNameA} analyze={this.analyze}
+                                   changeDocumentA={this.handleDocumentChangeA} toggle={this.toggle}
+                                   changeDocumentB={this.handleDocumentChangeB} changeNameB={this.handleChangeNameB}
+                                   changeCorpus={this.handleChangeCorpus}
+                                   corpus={this.state.corpus}
+                                   documenta={this.state.documenta}
+                                   namea={this.state.namea}
+                                   documentb={this.state.documentb}
+                                   nameb={this.state.nameb}/>
                 </div>
             </div>
         );

@@ -14,7 +14,7 @@ class WordFrequencyGraph extends React.Component {
 
     // The following three functions are responsible for resizing/updating
     componentWillReceiveProps(nextProps, nextContext) {
-        if (this.props.data !== nextProps.data || this.props.filterWord !== nextProps.filterWord) {
+        if (this.props.dataB !== nextProps.dataB || this.props.dataA !== nextProps.dataA || this.props.filterWord !== nextProps.filterWord) {
             this.redrawChart(true)
         }
     }
@@ -45,13 +45,19 @@ class WordFrequencyGraph extends React.Component {
     // Draws the svg and all child components
     drawChart(animate) {
         // Transform the corpus1
-        var corpus1 = this.props.data.map(o => {
+        var corpus1 = this.props.dataA.map(o => {
             return {x: o.word, y: o.count}
         });
 
+        var corpus2 = this.props.dataB.map(o => {
+            return {x: o.word, y: o.count}
+        });
+
+        console.log(corpus2);
+
         const filterWord = this.props.filterWord.toLowerCase();
 
-        function filterFunction(sample){
+        function filterFunction(sample) {
             return sample.x.toLowerCase().includes(filterWord)
         }
 
@@ -60,10 +66,10 @@ class WordFrequencyGraph extends React.Component {
         }
 
         if (corpus1.length > 30) {
-            corpus1 = corpus1.slice(0,30);
+            corpus1 = corpus1.slice(0, 30);
         }
 
-        var corpus2 = corpus1;
+        // var corpus2 = corpus1;
 
         // Define the parent div and svg
         const parent = d3.select("." + this.props.id);
@@ -83,6 +89,7 @@ class WordFrequencyGraph extends React.Component {
         this.buildLegend(svg, margin);
 
         this.buildBar(margin, svg, corpus1, x, y, "#7F9DEE", animate);
+        this.buildBar(margin, svg, corpus2, x, y, "#97d094", animate);
     }
 
 
@@ -132,7 +139,9 @@ class WordFrequencyGraph extends React.Component {
 
     getX(data, margin) {
         return d3.scaleBand()
-            .domain(data.map(function(d) { return d.x; }))
+            .domain(data.map(function (d) {
+                return d.x;
+            }))
             .range([0, this.state.width - margin.left - margin.right])
             .padding(0.4);
     }
@@ -180,14 +189,29 @@ class WordFrequencyGraph extends React.Component {
             .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
             .attr("cx", 5).attr("cy", this.state.height - margin.bottom / 2 + 7)
             .attr("r", 6)
-            .style("fill", "#4972e5")
+            .style("fill", "#7F9DEE")
+            .style("fill-opacity", 0.8);
+
+        svg.append("circle")
+            .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
+            .attr("cx", 150).attr("cy", this.state.height - margin.bottom / 2 + 7)
+            .attr("r", 6)
+            .style("fill", "#97d094")
             .style("fill-opacity", 0.8);
 
         svg.append("text")
             .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
             .attr("x", 20)
             .attr("y", this.state.height - margin.bottom / 2 + 7)
-            .text(this.props.docName)
+            .text(this.props.docNameA)
+            .style("font-size", "15px")
+            .attr("alignment-baseline", "middle");
+
+        svg.append("text")
+            .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
+            .attr("x", 165)
+            .attr("y", this.state.height - margin.bottom / 2 + 7)
+            .text(this.props.docNameB)
             .style("font-size", "15px")
             .attr("alignment-baseline", "middle");
 
@@ -209,11 +233,17 @@ class WordFrequencyGraph extends React.Component {
                 .enter().append("rect")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
                 .attr("class", "bar")
-                .attr("x", function(d) { return x(d.x); })
+                .attr("x", function (d) {
+                    return x(d.x);
+                })
                 .attr("width", x.bandwidth())
                 .style("fill", color)
-                .attr("y", function(d) { return y(0); })
-                .attr("height", function(d) {return h - y(0) });
+                .attr("y", function (d) {
+                    return y(0);
+                })
+                .attr("height", function (d) {
+                    return h - y(0)
+                });
 
             svg.selectAll("rect")
                 .transition()
@@ -234,11 +264,17 @@ class WordFrequencyGraph extends React.Component {
                 .enter().append("rect")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
                 .attr("class", "bar")
-                .attr("x", function(d) { return x(d.x); })
+                .attr("x", function (d) {
+                    return x(d.x);
+                })
                 .attr("width", x.bandwidth())
                 .style("fill", color)
-                .attr("y", function(d) { return y(d.y); })
-                .attr("height", function(d) {return h - y(d.y) });
+                .attr("y", function (d) {
+                    return y(d.y);
+                })
+                .attr("height", function (d) {
+                    return h - y(d.y)
+                });
         }
     }
 
