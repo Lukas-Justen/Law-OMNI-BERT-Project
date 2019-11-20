@@ -58,3 +58,7 @@ def handle_data():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# TODO: Remove Stop Words
+# TODO: Remove .,/[ And Other Signs
+# TODO: Calculate Readibility Index Or Other Metrics
