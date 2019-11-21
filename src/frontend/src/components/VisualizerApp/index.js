@@ -91,18 +91,24 @@ class VisualizerApp extends React.Component {
     handleSearchChange(event) {
         this.setState({
             filterWord: event.target.value
-        }, ()=>{this.fetchData()})
+        }, () => {
+            this.fetchData()
+        })
     }
 
     handleChangeFreqClip(event) {
         if (event.target.value === "" || parseInt(event.target.value) <= 0) {
             this.setState({
                 freq_clip: 30
-            }, ()=>{this.fetchData()})
+            }, () => {
+                this.fetchData()
+            })
         } else {
             this.setState({
                 freq_clip: parseInt(event.target.value)
-            },()=>{this.fetchData()})
+            }, () => {
+                this.fetchData()
+            })
         }
 
 
@@ -176,22 +182,44 @@ class VisualizerApp extends React.Component {
                             <b>General Statistics</b></h5>
                         <MDBRow>
                             <MDBCol md={3} className={"text-center stats-info"}>
-                                <div><h1 className={"stats-value"}>{this.state.wordsa} / {this.state.wordsb}</h1><p
-                                    className={"stats-description"}>NUMBER OF WORDS</p></div>
+                                <div>
+                                    <MDBRow center>
+                                        <h1 className={"stats-value-a"}>{this.state.wordsa}</h1>
+                                        <h1 className={"stats-value"}> / </h1>
+                                        <h1 className={"stats-value-b"}>{this.state.wordsb}</h1>
+                                    </MDBRow>
+                                    <p className={"stats-description"}>NUMBER OF WORDS</p>
+                                </div>
                             </MDBCol>
                             <MDBCol md={3} className={"text-center stats-info"}>
-                                <div><h1 className={"stats-value"}>{this.state.vocaba} / {this.state.vocabb}</h1><p
-                                    className={"stats-description"}>VOCABULARY SIZE</p></div>
+                                <div>
+                                    <MDBRow center>
+                                        <h1 className={"stats-value-a"}>{this.state.vocaba}</h1>
+                                        <h1 className={"stats-value"}> / </h1>
+                                        <h1 className={"stats-value-b"}>{this.state.vocabb}</h1>
+                                    </MDBRow>
+                                    <p className={"stats-description"}>VOCABULARY SIZE</p>
+                                </div>
                             </MDBCol>
                             <MDBCol md={3} className={"text-center stats-info"}>
-                                <div><h1
-                                    className={"stats-value"}>{this.state.readabilitya} / {this.state.readabilityb}</h1>
-                                    <p
-                                        className={"stats-description"}>READABILITY INDEX</p></div>
+                                <div>
+                                    <MDBRow center>
+                                        <h1 className={"stats-value-a"}>{this.state.readabilitya}</h1>
+                                        <h1 className={"stats-value"}> / </h1>
+                                        <h1 className={"stats-value-b"}>{this.state.readabilityb}</h1>
+                                    </MDBRow>
+                                    <p className={"stats-description"}>READABILITY INDEX</p>
+                                </div>
                             </MDBCol>
                             <MDBCol md={3} className={"text-center stats-info"}>
-                                <div><h1 className={"stats-value"}>0 / 0</h1><p className={"stats-description"}>UNKNOWN
-                                    METRIC</p></div>
+                                <div>
+                                    <MDBRow center>
+                                        <h1 className={"stats-value-a"}>0</h1>
+                                        <h1 className={"stats-value"}> / </h1>
+                                        <h1 className={"stats-value-b"}>0</h1>
+                                    </MDBRow>
+                                    <p className={"stats-description"}>UNKNOWN METRIC</p>
+                                </div>
                             </MDBCol>
                         </MDBRow>
                     </MDBCard>

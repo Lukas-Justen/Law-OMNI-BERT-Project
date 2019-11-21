@@ -48,6 +48,17 @@
   font-weight: bold;
 }
 
+.stats-value-a {
+  font-weight: bold;
+  color: #5d73ae;
+}
+
+.stats-value-b {
+  font-weight: bold;
+  color: #97979c;
+}
+
+
 .stats-description {
   color: #38494d;
 }
