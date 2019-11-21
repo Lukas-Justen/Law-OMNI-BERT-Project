@@ -44,52 +44,90 @@ class WordFrequencyGraph extends React.Component {
 
     // Draws the svg and all child components
     drawChart(animate) {
-        // Transform the corpus1
-        var corpus1 = this.props.dataA.map(o => {
-            return {x: o.word, y: o.count}
-        });
+        // Transform the data
+        // var data = this.props.dataA.map(o => {
+        //     return {x: o.word, y: o.count}
+        // });
+        //
+        // const filterWord = this.props.filterWord.toLowerCase();
+        //
+        // function filterFunction(sample) {
+        //     return sample.x.toLowerCase().includes(filterWord)
+        // }
+        //
+        // if (filterWord !== "") {
+        //     data = data.filter(filterFunction)
+        // }
+        //
+        // if (data.length > 30) {
+        //     data = data.slice(0, 30);
+        // }
 
-        var corpus2 = this.props.dataB.map(o => {
-            return {x: o.word, y: o.count}
-        });
-
-        console.log(corpus2);
-
-        const filterWord = this.props.filterWord.toLowerCase();
-
-        function filterFunction(sample) {
-            return sample.x.toLowerCase().includes(filterWord)
-        }
-
-        if (filterWord !== "") {
-            corpus1 = corpus1.filter(filterFunction)
-        }
-
-        if (corpus1.length > 30) {
-            corpus1 = corpus1.slice(0, 30);
-        }
-
-        // var corpus2 = corpus1;
+        var data = [
+            {
+                "word": "Student",
+                "values": [
+                    {
+                        "value": 1,
+                        "corpus": "Corpus A"
+                    },
+                    {
+                        "value": 4,
+                        "corpus": "Corpus B"
+                    }
+                ]
+            },
+            {
+                "word": "Test",
+                "values": [
+                    {
+                        "value": 2,
+                        "corpus": "Corpus A"
+                    },
+                    {
+                        "value": 1,
+                        "corpus": "Corpus B"
+                    }
+                ]
+            },
+            {
+                "word": "AA",
+                "values": [
+                    {
+                        "value": 2,
+                        "corpus": "Corpus A"
+                    },
+                    {
+                        "value": 1,
+                        "corpus": "Corpus B"
+                    }
+                ]
+            },];
 
         // Define the parent div and svg
         const parent = d3.select("." + this.props.id);
         const margin = {top: 10, left: 50, right: 50, bottom: 65};
         const svg = this.getSvg(parent);
+        const corpora = data[0].values.map(function (d) {
+            return d.corpus;
+        });
 
         // Define the axis and the gridlines
-        const x = this.getX(corpus1, margin);
-        const y = this.getY(corpus1, corpus2, margin);
+        const x0 = this.getX0(data, margin);
+        const x1 = this.getX1(data, x0, corpora);
+        const y = this.getY(data, margin);
         const xTicks = this.getXTicks();
         const yTicks = this.getYTicks();
-        this.getXAxis(x, xTicks, margin, svg);
+        const colors = this.getColorSchema();
+        this.getXAxis(x0, xTicks, margin, svg);
         this.getYAxis(y, yTicks, margin, svg);
         this.getGridlinesY(svg, margin, y, yTicks);
 
         // Build a legend for the corpora
-        this.buildLegend(svg, margin);
+        this.buildLegend(svg, margin, corpora, colors);
 
-        this.buildBar(margin, svg, corpus1, x, y, "#7F9DEE", animate);
-        this.buildBar(margin, svg, corpus2, x, y, "#97d094", animate);
+        // Draw the bars
+        this.buildBars(svg, data, x0, x1, colors, y, margin, animate);
     }
 
 
@@ -99,12 +137,6 @@ class WordFrequencyGraph extends React.Component {
             .append("svg")
             .attr("height", this.state.height)
             .attr("width", this.state.width);
-    }
-
-    defineTransitionPath() {
-        return d3.transition()
-            .ease(d3.easeSin)
-            .duration(1000);
     }
 
     getXAxis(x, xTicks, margin, svg) {
@@ -137,27 +169,47 @@ class WordFrequencyGraph extends React.Component {
         return yAxis;
     }
 
-    getX(data, margin) {
+    getX0(data, margin) {
+        var words = data.map(function (d) {
+            return d.word;
+        });
+
+        console.log(words);
+
         return d3.scaleBand()
-            .domain(data.map(function (d) {
-                return d.x;
-            }))
-            .range([0, this.state.width - margin.left - margin.right])
-            .padding(0.4);
+            .domain(words)
+            .rangeRound([0, this.state.width - margin.left - margin.right])
+            .padding(0.2);
     }
 
-    getY(data1, data2, margin) {
-        const max1 = d3.max(data1, function (d) {
-            return d.y;
-        });
-        const max2 = d3.max(data2, function (d) {
-            return d.y;
-        });
-        const max = Math.max(max1, max2);
+    getX1(data, x0, corpora) {
+        return d3.scaleBand()
+            .domain(corpora)
+            .range([0, x0.bandwidth()])
+            .paddingInner(0.1);
+    }
+
+    getY(data, margin) {
+        // const max1 = d3.max(data1, function (d) {
+        //     return d.y;
+        // });
+        // const max2 = d3.max(data2, function (d) {
+        //     return d.y;
+        // });
+        // const max = Math.max(max1, max2);
 
         return d3.scaleLinear()
-            .domain([0, max])
+            .domain([0, d3.max(data, function (word) {
+                return d3.max(word.values, function (d) {
+                    return d.value;
+                });
+            })])
             .range([this.state.height - margin.top - margin.bottom, 0]);
+    }
+
+    getColorSchema() {
+        return d3.scaleOrdinal()
+            .range(["#7F9DEE", "#97d094"]);
     }
 
     getXTicks() {
@@ -184,36 +236,23 @@ class WordFrequencyGraph extends React.Component {
         return gridlinesY;
     }
 
-    buildLegend(svg, margin) {
-        svg.append("circle")
-            .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
-            .attr("cx", 5).attr("cy", this.state.height - margin.bottom / 2 + 7)
-            .attr("r", 6)
-            .style("fill", "#7F9DEE")
-            .style("fill-opacity", 0.8);
+    buildLegend(svg, margin, corpora, colors) {
+        corpora.forEach((value, index) => {
+            svg.append("circle")
+                .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
+                .attr("cx", 5 + index * 145).attr("cy", this.state.height - margin.bottom / 2 + 7)
+                .attr("r", 6)
+                .style("fill", colors(value))
+                .style("fill-opacity", 0.8);
 
-        svg.append("circle")
-            .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
-            .attr("cx", 150).attr("cy", this.state.height - margin.bottom / 2 + 7)
-            .attr("r", 6)
-            .style("fill", "#97d094")
-            .style("fill-opacity", 0.8);
-
-        svg.append("text")
-            .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
-            .attr("x", 20)
-            .attr("y", this.state.height - margin.bottom / 2 + 7)
-            .text(this.props.docNameA)
-            .style("font-size", "15px")
-            .attr("alignment-baseline", "middle");
-
-        svg.append("text")
-            .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
-            .attr("x", 165)
-            .attr("y", this.state.height - margin.bottom / 2 + 7)
-            .text(this.props.docNameB)
-            .style("font-size", "15px")
-            .attr("alignment-baseline", "middle");
+            svg.append("text")
+                .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
+                .attr("x", 20 + index * 145)
+                .attr("y", this.state.height - margin.bottom / 2 + 7)
+                .text(value)
+                .style("font-size", "15px")
+                .attr("alignment-baseline", "middle");
+        });
 
         svg.append("text")
             .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
@@ -224,56 +263,91 @@ class WordFrequencyGraph extends React.Component {
             .attr("alignment-baseline", "middle");
     }
 
-    buildBar(margin, svg, data, x, y, color, animate) {
+    buildBars(svg, data, x0, x1, colors, y, margin, animate) {
         const h = this.state.height - margin.bottom - margin.top;
+        var slice;
 
         if (animate) {
-            svg.selectAll(".bar")
+            slice = svg.selectAll(".slice")
                 .data(data)
-                .enter().append("rect")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-                .attr("class", "bar")
-                .attr("x", function (d) {
-                    return x(d.x);
+                .enter().append("g")
+                .attr("class", "g")
+                .attr("transform", function (d) {
+                    return "translate(" + x0(d.word) + "," + margin.top + ")";
+                });
+
+            slice.selectAll("rect")
+                .data(function (d) {
+                    return d.values;
                 })
-                .attr("width", x.bandwidth())
-                .style("fill", color)
+                .enter().append("rect")
+                .attr("transform", "translate(" + margin.left + "," + 0 + ")")
+                .attr("width", x1.bandwidth())
+                .attr("x", function (d) {
+                    return x1(d.corpus);
+                })
+                .style("fill", function (d) {
+                    return colors(d.corpus)
+                })
                 .attr("y", function (d) {
                     return y(0);
                 })
                 .attr("height", function (d) {
-                    return h - y(0)
+                    return h - y(0);
+                })
+                .on("mouseover", function (d) {
+                    d3.select(this).style("fill", d3.rgb(colors(d.corpus)).darker(1));
+                })
+                .on("mouseout", function (d) {
+                    d3.select(this).style("fill", colors(d.corpus));
                 });
 
             svg.selectAll("rect")
                 .transition()
                 .duration(1000)
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                .attr("transform", "translate(" + margin.left + "," + 0 + ")")
                 .attr("y", function (d) {
-                    return y(d.y);
+                    return y(d.value);
                 })
                 .attr("height", function (d) {
-                    return h - y(d.y);
+                    return h - y(d.value);
                 })
                 .delay(function (d, i) {
                     return (i * 25)
-                })
+                });
         } else {
-            svg.selectAll(".bar")
+            slice = svg.selectAll(".slice")
                 .data(data)
-                .enter().append("rect")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-                .attr("class", "bar")
-                .attr("x", function (d) {
-                    return x(d.x);
+                .enter().append("g")
+                .attr("class", "g")
+                .attr("transform", function (d) {
+                    return "translate(" + x0(d.word) + "," + margin.top + ")";
+                });
+
+            slice.selectAll("rect")
+                .data(function (d) {
+                    return d.values;
                 })
-                .attr("width", x.bandwidth())
-                .style("fill", color)
+                .enter().append("rect")
+                .attr("transform", "translate(" + margin.left + "," + 0 + ")")
+                .attr("width", x1.bandwidth())
+                .attr("x", function (d) {
+                    return x1(d.corpus);
+                })
+                .style("fill", function (d) {
+                    return colors(d.corpus)
+                })
                 .attr("y", function (d) {
-                    return y(d.y);
+                    return y(d.value);
                 })
                 .attr("height", function (d) {
-                    return h - y(d.y)
+                    return h - y(d.value);
+                })
+                .on("mouseover", function (d) {
+                    d3.select(this).style("fill", d3.rgb(colors(d.corpus)).darker(1));
+                })
+                .on("mouseout", function (d) {
+                    d3.select(this).style("fill", colors(d.corpus));
                 });
         }
     }

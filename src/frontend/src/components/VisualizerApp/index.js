@@ -2,7 +2,7 @@ import React from 'react';
 import './index.css';
 import {
     MDBBtn,
-    MDBCard, MDBCol, MDBFormInline, MDBInput, MDBNavbar,
+    MDBCard, MDBCol, MDBNavbar,
     MDBNavbarBrand,
     MDBNavbarNav, MDBRow
 } from "mdbreact";
@@ -16,7 +16,7 @@ class VisualizerApp extends React.Component {
         super(props, context);
 
         this.state = {
-            modal: true,
+            modal: false,
             dataa: [],
             datab: [],
             namea: "",
