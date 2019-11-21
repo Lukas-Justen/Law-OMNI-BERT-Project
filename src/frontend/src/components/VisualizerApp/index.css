@@ -55,11 +55,36 @@
 .search-field {
   line-height: 24px;
   height: 24px;
-  margin: 0 0 0 40px;
+  margin: 0 0 0 5px;
   width: 20% !important;
 }
 
 .search-field:focus {
   box-shadow: 0 0 3px #583a96 !important;
   border-color: #583a96 !important;
+}
+
+.freq-field {
+  line-height: 24px;
+  height: 24px;
+  margin: 0 0 0 5px;
+  text-align: center;
+  width: 100px !important;
+}
+
+.freq-field:focus {
+  box-shadow: 0 0 3px #583a96 !important;
+  border-color: #583a96 !important;
+}
+
+.filter-label {
+  line-height: 24px;
+  height: 24px;
+  margin: 0 0 0 40px;
+}
+
+.search-label {
+  line-height: 24px;
+  height: 24px;
+  margin: 0 0 0 200px;
 }

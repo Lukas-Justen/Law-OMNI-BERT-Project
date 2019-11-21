@@ -17,11 +17,10 @@ class VisualizerApp extends React.Component {
 
         this.state = {
             modal: false,
-            dataa: [],
-            datab: [],
-            namea: "",
+            frequencies: false,
+            namea: "Corpus A",
             documenta: "",
-            nameb: "",
+            nameb: "Corpus B",
             documentb: "",
             filterWord: "",
             wordsa: 0,
@@ -30,7 +29,7 @@ class VisualizerApp extends React.Component {
             wordsb: 0,
             vocabb: 0,
             readabilityb: 0,
-            corpus: "a"
+            freq_clip: 30
         };
         this.toggle = this.toggle.bind(this);
         this.handleChangeNameA = this.handleChangeNameA.bind(this);
@@ -39,6 +38,7 @@ class VisualizerApp extends React.Component {
         this.handleDocumentChangeA = this.handleDocumentChangeA.bind(this);
         this.handleDocumentChangeB = this.handleDocumentChangeB.bind(this);
         this.handleSearchChange = this.handleSearchChange.bind(this);
+        this.handleChangeFreqClip = this.handleChangeFreqClip.bind(this);
     }
 
     toggle() {
@@ -51,9 +51,15 @@ class VisualizerApp extends React.Component {
 
 
     handleChangeNameA(event) {
-        this.setState({
-            namea: event.target.value
-        })
+        if (event.target.value === "") {
+            this.setState({
+                namea: "Corpus A"
+            })
+        } else {
+            this.setState({
+                namea: event.target.value
+            })
+        }
     }
 
     handleDocumentChangeA(event) {
@@ -64,9 +70,15 @@ class VisualizerApp extends React.Component {
     }
 
     handleChangeNameB(event) {
-        this.setState({
-            nameb: event.target.value
-        })
+        if (event.target.value === "") {
+            this.setState({
+                nameb: "Corpus B"
+            })
+        } else {
+            this.setState({
+                nameb: event.target.value
+            })
+        }
     }
 
     handleDocumentChangeB(event) {
@@ -79,52 +91,62 @@ class VisualizerApp extends React.Component {
     handleSearchChange(event) {
         this.setState({
             filterWord: event.target.value
-        })
+        }, ()=>{this.fetchData()})
+    }
+
+    handleChangeFreqClip(event) {
+        if (event.target.value === "" || parseInt(event.target.value) <= 0) {
+            this.setState({
+                freq_clip: 30
+            }, ()=>{this.fetchData()})
+        } else {
+            this.setState({
+                freq_clip: parseInt(event.target.value)
+            },()=>{this.fetchData()})
+        }
+
+
+    }
+
+    fetchData() {
+        fetch("http://127.0.0.1:5000/analyze", {
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                "body": {
+                    "corpus_a": this.state.documenta,
+                    "corpus_b": this.state.documentb,
+                    "corpus_a_name": this.state.namea,
+                    "corpus_b_name": this.state.nameb,
+                    "freq_clip": this.state.freq_clip,
+                    "filter_word": this.state.filterWord,
+                }
+            }),
+            method: "POST"
+        }).then(value => value.json()
+        ).then(json => {
+            this.setState({
+                frequencies: json.body.frequencies,
+                wordsa: json.body.total_num_words_a,
+                vocaba: json.body.unique_words_a.length,
+                wordsb: json.body.total_num_words_b,
+                vocabb: json.body.unique_words_b.length
+            });
+        }).catch(error => {
+            console.log(error)
+        });
     }
 
     analyze() {
         this.toggle();
-
-        fetch("http://127.0.0.1:5000/handle_form", {
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                "body": {
-                    "text_blob": this.state.documenta
-                }
-            }),
-            method: "POST"
-        }).then(value => value.json()
-        ).then(json => {
-            this.setState({
-                dataa: json.body.frequencies,
-                wordsa: json.body.total_num_words,
-                vocaba: json.body.unique_words.length
-            });
-        }).catch(error => {
-            console.log(error)
-        });
-
-        fetch("http://127.0.0.1:5000/handle_form", {
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                "body": {
-                    "text_blob": this.state.documentb
-                }
-            }),
-            method: "POST"
-        }).then(value => value.json()
-        ).then(json => {
-            this.setState({
-                datab: json.body.frequencies,
-                wordsb: json.body.total_num_words,
-                vocabb: json.body.unique_words.length
-            });
-        }).catch(error => {
-            console.log(error)
-        });
+        this.fetchData();
     }
 
     render() {
+        var graph = <div/>;
+        if (this.state.frequencies.length > 0) {
+            graph = <WordFrequencyGraph id={"word-frequency"} data={this.state.frequencies} height={"calc(100% - 60px)"}
+                                        filterWord={this.state.filterWord}/>;
+        }
         return (
             <div className={"h-100"}>
 
@@ -177,20 +199,23 @@ class VisualizerApp extends React.Component {
                         <MDBRow className={"headline-margin"}><h5 className={"content-headline"}><i
                             className="fas fa-chart-line content-icon"/>
                             <b>Word Frequency Graph</b></h5>
+                            <p className={"search-label"}>Filter Substring:</p>
                             <input type="email" placeholder={"Search for words ..."}
                                    className="form-control search-field" value={this.state.filterWord}
                                    onChange={this.handleSearchChange}/>
+
+                            <p className={"filter-label"}>Number of Results:</p>
+                            <input type="email" placeholder={"Results"}
+                                   className="form-control freq-field" value={this.state.freq_clip}
+                                   onChange={this.handleChangeFreqClip}/>
                         </MDBRow>
-                        <WordFrequencyGraph id={"word-frequency"} dataA={this.state.dataa} height={"calc(100% - 60px)"}
-                                            filterWord={this.state.filterWord} docNameA={this.state.namea}
-                                            docNameB={this.state.nameb} dataB={this.state.datab}/>
+                        {graph}
                     </MDBCard>
 
                     <ModalDocument modal={this.state.modal} changeNameA={this.handleChangeNameA} analyze={this.analyze}
                                    changeDocumentA={this.handleDocumentChangeA} toggle={this.toggle}
                                    changeDocumentB={this.handleDocumentChangeB} changeNameB={this.handleChangeNameB}
                                    changeCorpus={this.handleChangeCorpus}
-                                   corpus={this.state.corpus}
                                    documenta={this.state.documenta}
                                    namea={this.state.namea}
                                    documentb={this.state.documentb}

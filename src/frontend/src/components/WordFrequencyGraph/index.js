@@ -14,7 +14,7 @@ class WordFrequencyGraph extends React.Component {
 
     // The following three functions are responsible for resizing/updating
     componentWillReceiveProps(nextProps, nextContext) {
-        if (this.props.dataB !== nextProps.dataB || this.props.dataA !== nextProps.dataA || this.props.filterWord !== nextProps.filterWord) {
+        if (this.props.data !== nextProps.data || this.props.filterWord !== nextProps.filterWord) {
             this.redrawChart(true)
         }
     }
@@ -63,54 +63,16 @@ class WordFrequencyGraph extends React.Component {
         //     data = data.slice(0, 30);
         // }
 
-        var data = [
-            {
-                "word": "Student",
-                "values": [
-                    {
-                        "value": 1,
-                        "corpus": "Corpus A"
-                    },
-                    {
-                        "value": 4,
-                        "corpus": "Corpus B"
-                    }
-                ]
-            },
-            {
-                "word": "Test",
-                "values": [
-                    {
-                        "value": 2,
-                        "corpus": "Corpus A"
-                    },
-                    {
-                        "value": 1,
-                        "corpus": "Corpus B"
-                    }
-                ]
-            },
-            {
-                "word": "AA",
-                "values": [
-                    {
-                        "value": 2,
-                        "corpus": "Corpus A"
-                    },
-                    {
-                        "value": 1,
-                        "corpus": "Corpus B"
-                    }
-                ]
-            },];
+        var data = this.props.data;
 
+        if (data) {
         // Define the parent div and svg
         const parent = d3.select("." + this.props.id);
         const margin = {top: 10, left: 50, right: 50, bottom: 65};
         const svg = this.getSvg(parent);
-        const corpora = data[0].values.map(function (d) {
-            return d.corpus;
-        });
+            const corpora = data[0].values.map(function (d) {
+                return d.corpus;
+            });
 
         // Define the axis and the gridlines
         const x0 = this.getX0(data, margin);
@@ -128,6 +90,7 @@ class WordFrequencyGraph extends React.Component {
 
         // Draw the bars
         this.buildBars(svg, data, x0, x1, colors, y, margin, animate);
+        }
     }
 
 
@@ -209,7 +172,7 @@ class WordFrequencyGraph extends React.Component {
 
     getColorSchema() {
         return d3.scaleOrdinal()
-            .range(["#7F9DEE", "#97d094"]);
+            .range(["#7F9DEE", "#c4c5cb",]);
     }
 
     getXTicks() {
@@ -242,8 +205,7 @@ class WordFrequencyGraph extends React.Component {
                 .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
                 .attr("cx", 5 + index * 145).attr("cy", this.state.height - margin.bottom / 2 + 7)
                 .attr("r", 6)
-                .style("fill", colors(value))
-                .style("fill-opacity", 0.8);
+                .style("fill", colors(value));
 
             svg.append("text")
                 .attr("transform", "translate(" + (margin.left) + ", " + 0 + ")")
@@ -313,7 +275,7 @@ class WordFrequencyGraph extends React.Component {
                     return h - y(d.value);
                 })
                 .delay(function (d, i) {
-                    return (i * 25)
+                    return (i * 10)
                 });
         } else {
             slice = svg.selectAll(".slice")

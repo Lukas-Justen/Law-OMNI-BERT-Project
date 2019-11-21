@@ -11,19 +11,15 @@ def get_unique_words(word_list):
 def calc_word_freq(word_list):
     return Counter(word_list)
 
-def get_metrics(text_block, freq_clip=None):
+def get_metrics(text_block):
 
     word_list = get_word_list(text_block)
 
     total_num_words = len(word_list)
     unique_words = get_unique_words(word_list)
-    frequencies = [{"word": x, "count":y} for x,y in sorted(calc_word_freq(word_list).items(), key=lambda x:x[1], reverse=True)]
+    frequencies = calc_word_freq(word_list)
 
-    if freq_clip != None and freq_clip < len(frequencies):
-        frequencies = frequencies[:freq_clip]
-
-    elif freq_clip != None and freq_clip >= len(frequencies):
-        frequencies = -1
+    # frequencies = [{"word": x, "count":y} for x,y in sorted(calc_word_freq(word_list).items(), key=lambda x:x[1], reverse=True)]
 
     return total_num_words, unique_words, frequencies
 

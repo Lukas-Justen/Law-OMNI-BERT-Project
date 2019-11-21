@@ -7,21 +7,9 @@ class ModalDocument extends React.Component {
 
     constructor(props, context) {
         super(props, context);
-
-        this.corpusChangeA = this.corpusChangeA.bind(this);
-        this.corpusChangeB = this.corpusChangeB.bind(this);
-    }
-
-    corpusChangeA(event) {
-        this.props.changeCorpus("a")
-    }
-
-    corpusChangeB(event) {
-        this.props.changeCorpus("b")
     }
 
     render() {
-
         const btnA = <MDBCol md={6}>
             <div className={"corpusa-div text-center"} color="corpusa">CORPUS A</div>
         </MDBCol>;
@@ -59,7 +47,7 @@ class ModalDocument extends React.Component {
 
                 </MDBRow>
                 <MDBBtn className={"visualize-btn shadow-none"} onClick={this.props.analyze}
-                        disabled={(this.props.documenta === "" || this.props.namea === "") && (this.props.documentb === "" || this.props.nameb === "")}
+                        disabled={this.props.namea === "" || this.props.nameb === "" || (this.props.documenta === "" && (this.props.documentb === ""))}
                         color="primary">Analyze</MDBBtn>
             </MDBModalBody>
         </MDBModal>

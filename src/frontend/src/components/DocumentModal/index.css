@@ -31,21 +31,21 @@
 }
 
 .corpusa-border:focus {
-    border: 1px solid #97d094 !important;
-    box-shadow: inset 0 0 0 1px #97d094 !important;
-}
-
-.corpusa-border:focus + label {
-    color: #97d094 !important;
-}
-
-.corpusb-border:focus {
     border: 1px solid #7F9DEE !important;
     box-shadow: inset 0 0 0 1px #7F9DEE !important;
 }
 
-.corpusb-border:focus + label {
+.corpusa-border:focus + label {
     color: #7F9DEE !important;
+}
+
+.corpusb-border:focus {
+    border: 1px solid #c4c5cb !important;
+    box-shadow: inset 0 0 0 1px #c4c5cb !important;
+}
+
+.corpusb-border:focus + label {
+    color: #c4c5cb !important;
 }
 
 .corpus-btn {
@@ -59,7 +59,7 @@
 }
 
 .corpusa-div {
-    background-color: #97d094;
+    background-color: #7F9DEE;
     width: calc(100%);
     height: 32px;
     line-height: 32px;
@@ -70,7 +70,7 @@
 }
 
 .corpusb-div {
-    background-color: #7F9DEE;
+    background-color: #c4c5cb;
     width: calc(100%);
     height: 32px;
     line-height: 32px;
